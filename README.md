@@ -216,6 +216,19 @@ crud-redis/
 - **Frontend**: Vanilla JavaScript, HTML5, CSS3
 - **Database**: Redis
 
+## Security Considerations
+
+⚠️ **Important**: This tool is designed for development and internal use. Before deploying to production or exposing to the internet, consider implementing:
+
+- **Rate Limiting**: Add rate limiting middleware (e.g., `express-rate-limit`) to prevent abuse
+- **Authentication**: Implement authentication and authorization to protect access
+- **HTTPS**: Use HTTPS in production to encrypt data in transit
+- **Network Security**: Run Redis and the application in a secure network, not exposed to the public internet
+- **Input Validation**: Additional validation for user inputs
+- **CORS Configuration**: Configure CORS appropriately for your deployment environment
+
+This tool provides direct access to your Redis database. Use appropriate security measures based on your deployment environment.
+
 ## License
 
 ISC
