@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Redis Studio - CRUD Tool</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <h1 class="logo">
+                    <svg class="logo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                        <line x1="9" y1="3" x2="9" y2="21"/>
+                    </svg>
+                    Redis Studio
+                </h1>
+                <div class="header-actions">
+                    <div class="connection-status" id="connectionStatus">
+                        <span class="status-dot"></span>
+                        <span class="status-text">Connecting...</span>
+                    </div>
+                    <button class="btn btn-primary" onclick="showCreateModal()">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <line x1="12" y1="5" x2="12" y2="19"/>
+                            <line x1="5" y1="12" x2="19" y2="12"/>
+                        </svg>
+                        Add Key
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Sidebar -->
+            <aside class="sidebar">
+                <div class="sidebar-header">
+                    <h2>Redis Keys</h2>
+                    <div class="search-box">
+                        <input 
+                            type="text" 
+                            id="searchInput" 
+                            placeholder="Search keys..." 
+                            onkeyup="filterKeys()"
+                        >
+                    </div>
+                    <div class="db-info" id="dbInfo">
+                        <span class="db-size">0 keys</span>
+                    </div>
+                </div>
+                <div class="keys-list" id="keysList">
+                    <div class="loading">Loading keys...</div>
+                </div>
+            </aside>
+
+            <!-- Content Area -->
+            <section class="content-area">
+                <div class="empty-state" id="emptyState">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                    </svg>
+                    <h2>No key selected</h2>
+                    <p>Select a key from the sidebar to view and edit its content</p>
+                </div>
+
+                <div class="key-detail" id="keyDetail" style="display: none;">
+                    <div class="detail-header">
+                        <div class="detail-title">
+                            <h2 id="detailKeyName"></h2>
+                            <span class="key-type" id="detailKeyType"></span>
+                            <span class="key-ttl" id="detailKeyTTL"></span>
+                        </div>
+                        <div class="detail-actions">
+                            <button class="btn btn-secondary" onclick="editKey()">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                                </svg>
+                                Edit
+                            </button>
+                            <button class="btn btn-danger" onclick="deleteKey()">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                    <polyline points="3 6 5 6 21 6"/>
+                                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                                </svg>
+                                Delete
+                            </button>
+                        </div>
+                    </div>
+                    <div class="detail-content" id="detailContent">
+                        <!-- Content will be populated dynamically -->
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Create/Edit Modal -->
+    <div class="modal" id="createModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle">Create New Key</h3>
+                <button class="modal-close" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="keyName">Key Name</label>
+                    <input type="text" id="keyName" placeholder="Enter key name" required>
+                </div>
+                <div class="form-group">
+                    <label for="keyType">Type</label>
+                    <select id="keyType" onchange="updateValueInput()">
+                        <option value="string">String</option>
+                        <option value="hash">Hash</option>
+                        <option value="list">List</option>
+                        <option value="set">Set</option>
+                        <option value="zset">Sorted Set</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="keyTTL">TTL (seconds, -1 for no expiration)</label>
+                    <input type="number" id="keyTTL" placeholder="Enter TTL" value="-1">
+                </div>
+                <div class="form-group">
+                    <label for="keyValue">Value</label>
+                    <div id="valueInputContainer">
+                        <textarea id="keyValue" rows="5" placeholder="Enter value"></textarea>
+                    </div>
+                    <small class="form-hint" id="valueHint">Enter a string value</small>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+                <button class="btn btn-primary" onclick="saveKey()">Save</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
